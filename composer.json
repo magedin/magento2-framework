@@ -1,0 +1,14 @@
+{
+    "name": "magedin/magento2-framework",
+    "description": "A set of utilities to help in Magento 2 development.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "MagedIn Technology",
+            "email": "support@magedin.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}
