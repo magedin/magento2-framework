@@ -12,7 +12,9 @@
 
 declare(strict_types=1);
 
-namespace MagedIn\Validator;
+namespace MagedIn\Framework\Magento2\Validator;
+
+use MagedIn\Framework\Magento2\Normalizer\Cnpj as CnpjNormalizer;
 
 class Cnpj
 {
@@ -27,7 +29,7 @@ class Cnpj
     private $normalizer;
 
     public function __construct(
-        \MagedIn\Normalizer\Cnpj $normalizer
+        CnpjNormalizer $normalizer
     ) {
         $this->normalizer = $normalizer;
     }

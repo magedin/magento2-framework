@@ -12,7 +12,9 @@
 
 declare(strict_types=1);
 
-namespace MagedIn\Validator;
+namespace MagedIn\Framework\Magento2\Validator;
+
+use MagedIn\Framework\Magento2\Normalizer\Cpf as CpfNormalizer;
 
 class Cpf
 {
@@ -27,7 +29,7 @@ class Cpf
     private $normalizer;
 
     public function __construct(
-        \MagedIn\Normalizer\Cpf $normalizer
+        CpfNormalizer $normalizer
     ) {
         $this->normalizer = $normalizer;
     }

@@ -12,7 +12,7 @@
 
 declare(strict_types=1);
 
-namespace MagedIn\Normalizer;
+namespace MagedIn\Framework\Magento2\Normalizer;
 
 use MagedIn\Formatter\OnlyNumber;
 use MagedIn\Formatter\StringSize;

@@ -12,10 +12,10 @@
 
 declare(strict_types=1);
 
-namespace MagedIn\Normalizer;
+namespace MagedIn\Framework\Magento2\Normalizer;
 
-use MagedIn\Formatter\OnlyNumber;
-use MagedIn\Formatter\StringSize;
+use MagedIn\Framework\Magento2\Formatter\OnlyNumber;
+use MagedIn\Framework\Magento2\Formatter\StringSize;
 
 class Postcode
 {

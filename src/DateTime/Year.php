@@ -12,7 +12,7 @@
 
 declare(strict_types=1);
 
-namespace MagedIn\DateTime;
+namespace MagedIn\Framework\Magento2\DateTime;
 
 use DateTime;
 
