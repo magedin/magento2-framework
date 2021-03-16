@@ -15,7 +15,7 @@
     },
     "autoload": {
         "psr-4": {
-            "MagedIn\\": "src"
+            "MagedIn\\Framework\\Magento2": "src"
         }
     }
 }
