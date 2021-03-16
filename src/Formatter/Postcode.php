@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace MagedIn\Framework\Magento2\Formatter;
 
-use MagedIn\Normalizer\Postcode as PostcodeNormalizer;
+use MagedIn\Framework\Magento2\Normalizer\Postcode as PostcodeNormalizer;
 
 class Postcode
 {
