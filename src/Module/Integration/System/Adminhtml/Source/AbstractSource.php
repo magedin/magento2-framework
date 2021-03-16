@@ -12,7 +12,7 @@
 
 declare(strict_types=1);
 
-namespace MagedIn\Magento2\Framework\Module\Integration\System\Adminhtml\Source;
+namespace MagedIn\Framework\Magento2\Module\Integration\System\Adminhtml\Source;
 
 use Magento\Framework\Data\OptionSourceInterface;
 
