@@ -1,7 +1,7 @@
 {
     "name": "magedin/magento2-framework",
     "description": "A set of utilities to help in Magento 2 development.",
-    "type": "library",
+    "type": "magento2-library",
     "license": "MIT",
     "authors": [
         {
