@@ -49,7 +49,7 @@ class Environment extends AbstractSource
     /**
      * @var string[]
      */
-    private $allowedOptions = [
+    private array $allowedOptions = [
         self::ENVIRONMENT_PRODUCTION,
         self::ENVIRONMENT_STAGING,
         self::ENVIRONMENT_TESTING,
@@ -61,7 +61,7 @@ class Environment extends AbstractSource
     /**
      * @var string[]
      */
-    protected $optionLabels = [
+    protected array $optionLabels = [
         self::ENVIRONMENT_PRODUCTION  => 'Production',
         self::ENVIRONMENT_STAGING     => 'Staging',
         self::ENVIRONMENT_TESTING     => 'Testing',
@@ -73,7 +73,7 @@ class Environment extends AbstractSource
     /**
      * @var string[]
      */
-    protected $defaultOptions = [
+    protected array $defaultOptions = [
         self::ENVIRONMENT_PRODUCTION,
         self::ENVIRONMENT_STAGING,
         self::ENVIRONMENT_TESTING,
