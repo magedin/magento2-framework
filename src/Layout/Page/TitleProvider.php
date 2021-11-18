@@ -42,7 +42,7 @@ class TitleProvider
     public function getPageTitle(): ?string
     {
         if ($this->getPageTitleBlockInstance()) {
-            return $this->getPageTitleBlockInstance()->getPageTitle();
+            return (string) $this->getPageTitleBlockInstance()->getPageTitle();
         }
         return null;
     }
