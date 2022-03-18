@@ -49,7 +49,7 @@ class Environment extends AbstractSource
     /**
      * @var string[]
      */
-    private array $allowedOptions = [
+    private $allowedOptions = [
         self::ENVIRONMENT_PRODUCTION,
         self::ENVIRONMENT_STAGING,
         self::ENVIRONMENT_TESTING,
@@ -61,19 +61,19 @@ class Environment extends AbstractSource
     /**
      * @var string[]
      */
-    protected array $optionLabels = [
-        self::ENVIRONMENT_PRODUCTION  => 'Production',
-        self::ENVIRONMENT_STAGING     => 'Staging',
-        self::ENVIRONMENT_TESTING     => 'Testing',
-        self::ENVIRONMENT_TEST        => 'Test',
-        self::ENVIRONMENT_SANDBOX     => 'Sandbox',
-        self::ENVIRONMENT_DEVELOPMENT => 'Development',
+    protected $optionLabels = [
+        self::ENVIRONMENT_PRODUCTION  => 'Production Environment',
+        self::ENVIRONMENT_STAGING     => 'Staging Environment',
+        self::ENVIRONMENT_TESTING     => 'Testing Environment',
+        self::ENVIRONMENT_TEST        => 'Test Environment',
+        self::ENVIRONMENT_SANDBOX     => 'Sandbox Environment',
+        self::ENVIRONMENT_DEVELOPMENT => 'Development Environment',
     ];
 
     /**
      * @var string[]
      */
-    protected array $defaultOptions = [
+    protected $defaultOptions = [
         self::ENVIRONMENT_PRODUCTION,
         self::ENVIRONMENT_STAGING,
         self::ENVIRONMENT_TESTING,
@@ -88,6 +88,14 @@ class Environment extends AbstractSource
     public function getOptions(): array
     {
         return $this->defaultOptions;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function toOption(): array
+    {
+        return $this->getOptions();
     }
 
     /**
