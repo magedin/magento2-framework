@@ -23,6 +23,6 @@ class OnlyNumber
      */
     public function format(string $value): string
     {
-        return preg_replace('/[^0-9]/is', null, $value);
+        return preg_replace('/[^0-9]/is', '', $value);
     }
 }

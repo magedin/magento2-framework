@@ -43,7 +43,7 @@ class Postcode
     /**
      * @var PostcodeNormalizer
      */
-    private $postcodeNormalizer;
+    private PostcodeNormalizer $postcodeNormalizer;
 
     public function __construct(
         PostcodeNormalizer $postcodeNormalizer
@@ -59,7 +59,6 @@ class Postcode
     public function format(string $postcode): string
     {
         $postcode = str_split($this->postcodeNormalizer->normalize($postcode), self::FIRST_GROUP_LENGTH);
-        $postcode = implode('-', $postcode);
-        return (string) $postcode;
+        return implode('-', $postcode);
     }
 }

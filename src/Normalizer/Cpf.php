@@ -14,8 +14,8 @@ declare(strict_types=1);
 
 namespace MagedIn\Framework\Magento2\Normalizer;
 
-use MagedIn\Formatter\OnlyNumber;
-use MagedIn\Formatter\StringSize;
+use MagedIn\Framework\Magento2\Formatter\OnlyNumber;
+use MagedIn\Framework\Magento2\Formatter\StringSize;
 
 class Cpf
 {
@@ -32,12 +32,12 @@ class Cpf
     /**
      * @var OnlyNumber
      */
-    private $onlyNumber;
+    private OnlyNumber $onlyNumber;
 
     /**
      * @var StringSize
      */
-    private $stringSize;
+    private StringSize $stringSize;
 
     public function __construct(
         OnlyNumber $onlyNumber,
@@ -55,7 +55,6 @@ class Cpf
     public function normalize(string $value): string
     {
         $value = $this->onlyNumber->format($value);
-        $value = $this->stringSize->format($value, self::MAX_LENGTH, self::PAD_STRING, STR_PAD_LEFT);
-        return $value;
+        return $this->stringSize->format($value, self::MAX_LENGTH, self::PAD_STRING, STR_PAD_LEFT);
     }
 }
