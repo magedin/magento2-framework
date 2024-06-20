@@ -148,7 +148,7 @@ class Week extends AbstractDateTime
      *
      * @return false|string
      */
-    public function getDayOfWeek($datetime = null): bool
+    public function getDayOfWeek($datetime = null): string
     {
         return date('N', self::getDatetime($datetime));
     }
