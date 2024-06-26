@@ -79,7 +79,7 @@ class VersionLabel extends Label
     {
         $html = parent::getElementHtml();
         $note = __('This is the current version of your module installation.');
-        $html .= '<p class="note"><span>'.$note.'</span></p>';
+        $html .= '<p class="note"><span>' . $note . '</span></p>';
         return $html;
     }
 }

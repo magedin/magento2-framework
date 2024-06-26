@@ -14,6 +14,10 @@ declare(strict_types=1);
 
 namespace MagedIn\Framework\Magento2\Module;
 
+use Magento\Framework\Component\ComponentRegistrar;
+use Magento\Framework\Component\ComponentRegistrarInterface;
+use Magento\Framework\Exception\FileSystemException;
+use Magento\Framework\Filesystem\Driver\File;
 use Magento\Framework\Module\PackageInfo;
 
 class Metadata
@@ -24,16 +28,29 @@ class Metadata
     private PackageInfo $packageInfo;
 
     /**
+     * @var ComponentRegistrarInterface
+     */
+    private ComponentRegistrarInterface $componentRegistrar;
+    private File $file;
+
+    /**
      * @param PackageInfo $packageInfo
+     * @param ComponentRegistrarInterface $componentRegistrar
+     * @param File $file
      */
     public function __construct(
-        PackageInfo $packageInfo
+        PackageInfo $packageInfo,
+        ComponentRegistrarInterface $componentRegistrar,
+        File $file
     ) {
         $this->packageInfo = $packageInfo;
+        $this->componentRegistrar = $componentRegistrar;
+        $this->file = $file;
     }
 
     /**
      * @param string $packageName
+     *
      * @return string
      */
     public function getVersion(string $packageName): string
@@ -45,6 +62,7 @@ class Metadata
      * Get package version.
      *
      * @param string $packageName
+     *
      * @return string
      */
     private function getPackageVersion(string $packageName): string
@@ -56,14 +74,46 @@ class Metadata
             return $moduleVersion;
         }
 
+        $modulePath = $this->componentRegistrar->getPath(ComponentRegistrar::MODULE, $moduleName);
+        $moduleVersion = $this->getVersionFromComposerJson($modulePath);
+        if ($moduleVersion) {
+            return $moduleVersion;
+        }
+        $isLocalDir = str_contains($modulePath, 'app/code');
+
         /** If nothing is returned from either composer or local modules, we return an unknown version message. */
-        return (string) __('Unknown Module Version');
+        return (string) __('Unknown Module Version%note', [
+            'note' => $isLocalDir ? __(' (Installed into app/code)') : null,
+        ]);
+    }
+
+    /**
+     * DocBlock for method.
+     *
+     * @param string $modulePath
+     *
+     * @return string|null
+     */
+    private function getVersionFromComposerJson(string $modulePath): ?string
+    {
+        try {
+            $composerPath = $modulePath . DIRECTORY_SEPARATOR . 'composer.json';
+            if (!$this->file->isExists($composerPath) || !$this->file->isReadable($composerPath)) {
+                return null;
+            }
+            $jsonContent = $this->file->fileGetContents($composerPath);
+            $content = json_decode($jsonContent, true);
+            return $content['version'] ?? null;
+        } catch (FileSystemException $e) {
+            return null;
+        }
     }
 
     /**
      * Converts package name to module name. If the $packageName is already the module name, return it as it is.
      *
      * @param string $packageName
+     *
      * @return string
      */
     private function convertToModuleName(string $packageName): string
