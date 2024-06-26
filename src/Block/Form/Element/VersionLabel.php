@@ -69,4 +69,17 @@ class VersionLabel extends Label
         }
         return $this->moduleMetadata->getVersion($this->packageName);
     }
+
+    /**
+     * DocBlock for method.
+     *
+     * @return string
+     */
+    public function getElementHtml(): string
+    {
+        $html = parent::getElementHtml();
+        $note = __('This is the current version of your module installation.');
+        $html .= '<p class="note"><span>'.$note.'</span></p>';
+        return $html;
+    }
 }
