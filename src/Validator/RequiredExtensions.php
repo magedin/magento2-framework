@@ -57,4 +57,15 @@ class RequiredExtensions
             $this->availabilityChecker->isModuleEnabled($extension);
         }
     }
+
+    /**
+     * DocBlock for method.
+     *
+     * @return string
+     */
+    public function getIdentifier(): string
+    {
+        $identifier = 'bWFnZWRpbl9pbmFjdGl2ZV9leHRlbnNpb25zX21lc3NhZ2U=';
+        return base64_decode($identifier);
+    }
 }
