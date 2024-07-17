@@ -15,6 +15,8 @@ declare(strict_types=1);
 namespace MagedIn\Framework\Magento2\Module\Manager;
 
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\Message\MessageInterface;
 use Magento\Framework\Module\Manager;
 
 /**
@@ -28,32 +30,69 @@ class AvailabilityChecker
     private Manager $moduleManager;
 
     /**
+     * @var ManagerInterface
+     */
+    private ManagerInterface $messageManager;
+
+    /**
      * @param Manager $moduleManager
+     * @param ManagerInterface $messageManager
      */
     public function __construct(
-        Manager $moduleManager
+        Manager $moduleManager,
+        ManagerInterface $messageManager
     ) {
         $this->moduleManager = $moduleManager;
+        $this->messageManager = $messageManager;
     }
 
     /**
      * DocBlock for method.
      *
      * @param string $moduleName
+     * @param bool $addMessage
      * @param bool $graceful
      *
      * @return bool
      * @throws LocalizedException
      */
-    public function isModuleEnabled(string $moduleName, bool $graceful = false): bool
+    public function isModuleEnabled(string $moduleName, bool $addMessage = true, bool $graceful = false): bool
     {
         if (!$this->moduleManager->isEnabled($moduleName)) {
+            $message = base64_decode('UGxlYXNlIGFjdGl2YXRlIHRoZSAlMSBtb2R1bGUu');
+            $message = __($message, $moduleName);
+            if (true === $addMessage) {
+                $this->addMessage((string) $message);
+            }
             if (true === $graceful) {
                 return false;
             }
-            $message = base64_decode('UGxlYXNlIGFjdGl2YXRlIHRoZSAlMSBtb2R1bGUu');
-            throw new LocalizedException(__($message, $moduleName));
+            throw new LocalizedException($message);
         }
         return true;
+    }
+
+    /**
+     * DocBlock for method.
+     *
+     * @param string $text
+     *
+     * @return void
+     */
+    private function addMessage(string $text): void
+    {
+        $identifier = 'bWFnZWRpbl9pbmFjdGl2ZV9leHRlbnNpb25zX21lc3NhZ2U=';
+        $identifier = base64_decode($identifier);
+        $messages = $this->messageManager->getMessages(false, MessageInterface::TYPE_ERROR);
+        foreach ($messages->getItems() as $messageItem) {
+            if ($messageItem->getIdentifier() === $identifier) {
+                return;
+            }
+        }
+        $message = $this->messageManager
+            ->createMessage(MessageInterface::TYPE_ERROR)
+            ->setIdentifier($identifier)
+            ->setText($text);
+        $this->messageManager->addMessage($message, MessageInterface::TYPE_ERROR);
     }
 }
