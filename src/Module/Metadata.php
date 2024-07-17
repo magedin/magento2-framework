@@ -14,14 +14,38 @@ declare(strict_types=1);
 
 namespace MagedIn\Framework\Magento2\Module;
 
+use Composer\Composer;
+use Composer\Package\Locker;
+use Exception;
 use Magento\Framework\Component\ComponentRegistrar;
 use Magento\Framework\Component\ComponentRegistrarInterface;
+use Magento\Framework\Composer\ComposerFactory;
 use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\Filesystem\Driver\File;
 use Magento\Framework\Module\PackageInfo;
 
 class Metadata
 {
+    /**
+     * @var array
+     */
+    private array $packageVersion = [];
+
+    /**
+     * @var Composer|null
+     */
+    private ?Composer $composer = null;
+
+    /**
+     * @var Locker|null
+     */
+    private ?Locker $locker = null;
+
+    /**
+     * @var array
+     */
+    private array $packages = [];
+
     /**
      * @var PackageInfo
      */
@@ -31,31 +55,47 @@ class Metadata
      * @var ComponentRegistrarInterface
      */
     private ComponentRegistrarInterface $componentRegistrar;
+
+    /**
+     * @var ComposerFactory
+     */
+    private ComposerFactory $composerFactory;
+
+    /**
+     * @var File
+     */
     private File $file;
 
     /**
      * @param PackageInfo $packageInfo
      * @param ComponentRegistrarInterface $componentRegistrar
+     * @param ComposerFactory $composerFactory
      * @param File $file
      */
     public function __construct(
         PackageInfo $packageInfo,
         ComponentRegistrarInterface $componentRegistrar,
+        ComposerFactory $composerFactory,
         File $file
     ) {
         $this->packageInfo = $packageInfo;
         $this->componentRegistrar = $componentRegistrar;
         $this->file = $file;
+        $this->composerFactory = $composerFactory;
     }
 
     /**
      * @param string $packageName
      *
      * @return string
+     * @throws Exception
      */
     public function getVersion(string $packageName): string
     {
-        return $this->getPackageVersion($packageName);
+        if (empty($this->packageVersion[$packageName])) {
+            $this->packageVersion[$packageName] = $this->getPackageVersion($packageName);
+        }
+        return $this->packageVersion[$packageName];
     }
 
     /**
@@ -64,9 +104,13 @@ class Metadata
      * @param string $packageName
      *
      * @return string
+     * @throws Exception
      */
     private function getPackageVersion(string $packageName): string
     {
+        /**
+         * First we try to get from Magento modules info.
+         */
         $moduleName = $this->convertToModuleName($packageName);
         $moduleVersion = $this->packageInfo->getVersion($moduleName);
 
@@ -74,14 +118,27 @@ class Metadata
             return $moduleVersion;
         }
 
+        /**
+         * Then we move to the composer information into the module (if it exists).
+         */
         $modulePath = $this->componentRegistrar->getPath(ComponentRegistrar::MODULE, $moduleName);
         $moduleVersion = $this->getVersionFromComposerJson($modulePath);
         if ($moduleVersion) {
             return $moduleVersion;
         }
-        $isLocalDir = str_contains($modulePath, 'app/code');
 
-        /** If nothing is returned from either composer or local modules, we return an unknown version message. */
+        /**
+         * Then we try to grab the info from the composer locker file.
+         */
+        $lockedPackage = $this->getLockedPackage($packageName);
+        if ($lockedPackage && !empty($lockedPackage['version'])) {
+            return $lockedPackage['version'];
+        }
+
+        /**
+         * If nothing is returned from either composer or local modules, we return an unknown version message.
+         */
+        $isLocalDir = str_contains($modulePath, 'app/code');
         return (string) __('Unknown Module Version%note', [
             'note' => $isLocalDir ? __(' (Installed into app/code)') : null,
         ]);
@@ -122,5 +179,63 @@ class Metadata
             return $this->packageInfo->getModuleName($packageName);
         }
         return $packageName;
+    }
+
+    /**
+     * @return Composer
+     * @throws Exception
+     */
+    public function getComposer(): Composer
+    {
+        if (!$this->composer) {
+            $this->composer = $this->composerFactory->create();
+        }
+        return $this->composer;
+    }
+
+    /**
+     * DocBlock for method.
+     *
+     * @return Locker
+     * @throws Exception
+     */
+    public function getLocker(): Locker
+    {
+        if (!$this->locker) {
+            $this->locker = $this->getComposer()->getLocker();
+        }
+        return $this->locker;
+    }
+
+    /**
+     * DocBlock for method.
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function getLockedPackages(): array
+    {
+        if (empty($this->packages)) {
+            $lockData = $this->getLocker()->getLockData();
+            $this->packages = $lockData['packages'] ?? [];
+        }
+        return $this->packages;
+    }
+
+    /**
+     * DocBlock for method.
+     *
+     * @param string $packageName
+     *
+     * @return array
+     * @throws Exception
+     */
+    private function getLockedPackage(string $packageName): array
+    {
+        $lockedPackages = $this->getLockedPackages();
+        $package = array_filter($lockedPackages, static function (array $package) use ($packageName) {
+            return ($package['name'] ?? null) === $packageName;
+        });
+        return (array) reset($package);
     }
 }
