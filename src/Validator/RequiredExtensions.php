@@ -48,6 +48,7 @@ class RequiredExtensions
      * DocBlock for method.
      *
      * @return void
+     * @throws LocalizedException
      */
     public function areRequiredExtensionsEnabled(): void
     {
