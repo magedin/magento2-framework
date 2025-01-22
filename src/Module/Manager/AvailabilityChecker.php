@@ -23,6 +23,11 @@ use Magento\Framework\Module\Manager;
 class AvailabilityChecker
 {
     /**
+     * @var bool
+     */
+    private bool $hasFailed = false;
+
+    /**
      * @var Manager
      */
     private Manager $moduleManager;
@@ -48,6 +53,7 @@ class AvailabilityChecker
     public function isModuleEnabled(string $moduleName, bool $graceful = false): bool
     {
         if (!$this->moduleManager->isEnabled($moduleName)) {
+            $this->hasFailed = true;
             if (true === $graceful) {
                 return false;
             }
@@ -56,5 +62,15 @@ class AvailabilityChecker
             throw new LocalizedException($message);
         }
         return true;
+    }
+
+    /**
+     * DocBlock for method.
+     *
+     * @return bool
+     */
+    public function hasFailed(): bool
+    {
+        return $this->hasFailed;
     }
 }
