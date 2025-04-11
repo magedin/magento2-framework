@@ -14,71 +14,106 @@ declare(strict_types=1);
 
 namespace MagedIn\Framework\Magento2\Model\Locator;
 
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Registry;
 
 /**
- * DocBlock for AbstractLocator class.
+ * Abstract class `AbstractLocator` provides a base implementation for locating models.
+ *
+ * This class defines common functionality for retrieving models from the registry,
+ * resolving IDs, and interacting with repositories. It requires concrete implementations
+ * to define specific details such as the registry key, request field name, repository class,
+ * and model class.
  */
 abstract class AbstractLocator implements LocatorInterface
 {
     /**
-     * @var Registry
+     * @var Registry The registry instance used to store and retrieve models.
      */
     protected Registry $registry;
 
     /**
-     * @var RequestInterface
+     * @var RequestInterface The request instance used to retrieve request parameters.
      */
     protected RequestInterface $request;
 
     /**
-     * @param Registry $registry
-     * @param RequestInterface $request
+     * @var ObjectManagerInterface The object manager instance used to create objects dynamically.
+     */
+    protected ObjectManagerInterface $objectManager;
+
+    /**
+     * Constructor.
+     *
+     * Initializes the locator with the required dependencies.
+     *
+     * @param Registry $registry The registry instance.
+     * @param RequestInterface $request The request instance.
+     * @param ObjectManagerInterface $objectManager The object manager instance.
      */
     public function __construct(
         Registry $registry,
-        RequestInterface $request
+        RequestInterface $request,
+        ObjectManagerInterface $objectManager
     ) {
         $this->registry = $registry;
         $this->request = $request;
+        $this->objectManager = $objectManager;
     }
 
     /**
-     * Locate Synonym from registry or request parameters
+     * Locate a model from the registry or request parameters.
      *
-     * This method tries to find a profile in the following order:
-     * 1. First check the registry for an already loaded profile
-     * 2. If not found, try to get the profile_id from request parameters and load it
-     * 3. If neither source provides a valid profile, return null
+     * This method attempts to locate a model in the following order:
+     * 1. Check the registry for an already loaded model using the registry key.
+     * 2. If not found, attempt to load the model by ID from the repository.
+     * 3. If neither source provides a valid model, return null.
      *
-     * @param int|null $id
+     * @param int|null $id The ID of the model to locate. If null, the method will not attempt to load from the
+     *     repository.
      *
-     * @return object|null
+     * @return object|null The located model instance, or null if no valid model is found.
      */
     public function get(?int $id = null): ?object
     {
-        // Try to get profile from registry first
+        // Try to get the model from the registry first
         $model = $this->registry->registry($this->getRegistryKey());
         if (is_subclass_of($model, $this->getModelClassName()) && $model->getId()) {
             return $model;
         }
+
+        // If no ID is provided, return null
         if (empty($id)) {
             return null;
         }
+
         try {
+            // Attempt to load the model by ID from the repository
             if ($this->getRepository() && method_exists($this->getRepository(), 'getById')) {
                 $model = $this->getRepository()->getById($id);
                 $this->registry->register($this->getRegistryKey(), $model);
             }
             return $model;
-        } catch (NoSuchEntityException $e) {
+        } catch (NoSuchEntityException|\Exception $e) {
+            // Return null if the model cannot be found
             return null;
         }
     }
 
+    /**
+     * Resolve the ID from the provided parameter or request.
+     *
+     * This method attempts to resolve an ID in the following order:
+     * 1. If an ID is provided as a parameter, it is used.
+     * 2. If no ID is provided, it tries to retrieve the ID from the request
+     *    using the field name specified by `getRequestFieldName`.
+     *
+     * @param int|null $id The ID to resolve, or null to retrieve it from the request.
+     *
+     * @return int|null The resolved ID, or null if no valid ID is found.
+     */
     public function resolveId(int $id = null): ?int
     {
         // If not in registry, try to load by ID from request
@@ -92,51 +127,72 @@ abstract class AbstractLocator implements LocatorInterface
     }
 
     /**
-     * Create a new instance of StopWordInterface
+     * Create a new instance of the model class.
      *
-     * @param array $data
-     * @return mixed
+     * This method uses the Object Manager to create a new instance of the model
+     * class specified by the `getModelClassName` method. The `$data` parameter
+     * allows passing an array of data to initialize the model instance.
+     *
+     * @param array $data An associative array of data to initialize the model instance.
+     *
+     * @return mixed The newly created model instance.
      */
     public function createNewInstance(array $data = [])
     {
-        return ObjectManager::getInstance()->create($this->getModelClassName(), $data);
+        return $this->objectManager->create($this->getModelClassName(), $data);
     }
 
     /**
-     * DocBlock for method.
+     * Retrieve the repository instance.
      *
-     * @return string
-     */
-    abstract public function getRegistryKey(): string;
-
-    /**
-     * DocBlock for method.
+     * This method creates and returns an instance of the repository class
+     * specified by the `getRepositoryClassName` method. The repository
+     * is responsible for data retrieval and persistence.
      *
-     * @return string
+     * @return object The repository instance.
      */
-    abstract public function getRequestFieldName(): string;
-
-    /**
-     * DocBlock for method.
-     *
-     * @return mixed
-     */
-    abstract public function getRepositoryClassName(): string;
-
-    /**
-     * DocBlock for method.
-     *
-     * @return string
-     */
-    abstract public function getModelClassName(): string;
-
-    /**
-     * Get the model class name
-     *
-     * @return object
-     */
-    private function getRepository(): object
+    protected function getRepository(): object
     {
-        return ObjectManager::getInstance()->create($this->getRepositoryClassName());
+        return $this->objectManager->create($this->getRepositoryClassName());
     }
+
+    /**
+     * Retrieve the registry key.
+     *
+     * This method should return the key used to store and retrieve the model
+     * from the registry.
+     *
+     * @return string The registry key.
+     */
+    abstract protected function getRegistryKey(): string;
+
+    /**
+     * Retrieve the request field name.
+     *
+     * This method should return the name of the request parameter used to
+     * retrieve the model ID.
+     *
+     * @return string The request field name.
+     */
+    abstract protected function getRequestFieldName(): string;
+
+    /**
+     * Retrieve the repository class name.
+     *
+     * This method should return the fully qualified class name of the repository
+     * responsible for data retrieval and persistence.
+     *
+     * @return string The repository class name.
+     */
+    abstract protected function getRepositoryClassName(): string;
+
+    /**
+     * Retrieve the model class name.
+     *
+     * This method should return the fully qualified class name of the model
+     * that this locator is responsible for.
+     *
+     * @return string The model class name.
+     */
+    abstract protected function getModelClassName(): string;
 }
