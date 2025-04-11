@@ -15,28 +15,15 @@ declare(strict_types=1);
 namespace MagedIn\Framework\Magento2\Ui\DataProvider\Modifier\Field\MetaConfigGenerator;
 
 /**
- * DocBlock for Base class.
+ * DocBlock for Input class.
  */
-class Field extends AbstractGenerator
+class Hidden extends Input
 {
-    /**
-     * DocBlock for method.
-     *
-     * @param array $config
-     *
-     * @return array
-     */
     public function generate(array $config): array
     {
         $baseConfig = [
-            'componentType' => 'field',
-            'dataType' => 'text',
-            'label' => '',
-            'sortOrder' => 10,
-            // 'notice' => null,
-            // 'visible' => true,
-            // 'disabled' => false,
+            'formElement' => 'hidden',
         ];
-        return array_merge($baseConfig, $config);
+        return array_merge(parent::generate($baseConfig), $config);
     }
 }

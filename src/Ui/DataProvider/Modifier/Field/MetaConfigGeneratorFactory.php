@@ -36,8 +36,17 @@ class MetaConfigGeneratorFactory
         'textarea' => MetaConfigGenerator\Textarea::class,
         'button' => MetaConfigGenerator\Button::class,
         'password' => MetaConfigGenerator\Password::class,
+        'hidden' => MetaConfigGenerator\Hidden::class,
+        'number' => MetaConfigGenerator\Number::class,
+        'date' => MetaConfigGenerator\Date::class,
+        'fileUploader' => MetaConfigGenerator\FileUploader::class,
         'insertListing' => MetaConfigGenerator\InsertListing::class,
     ];
+
+    /**
+     * @var array
+     */
+    private array $instances = [];
 
     /**
      * @var ObjectManager
@@ -75,6 +84,12 @@ class MetaConfigGeneratorFactory
         if (!$instanceClass) {
             throw new InvalidArgumentException(__('Invalid type "%s" provided for MetaConfigGenerator.', $type));
         }
-        return $this->objectManager->create($instanceClass);
+
+        if (isset($this->instances[$type])) {
+            return $this->instances[$type];
+        }
+
+        $this->instances[$type] = $this->objectManager->create($instanceClass);
+        return $this->instances[$type];
     }
 }
