@@ -15,36 +15,53 @@ declare(strict_types=1);
 namespace MagedIn\Framework\Magento2;
 
 /**
- * DocBlock for Profiler class.
+ * Profiler class for tracking execution time and memory usage.
  */
 class Profiler
 {
+    /**
+     * Lowercase alphabet characters.
+     */
     public const CHARS_LOWERS = 'abcdefghijklmnopqrstuvwxyz';
 
+    /**
+     * Uppercase alphabet characters.
+     */
     public const CHARS_UPPERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
+    /**
+     * Numeric characters.
+     */
     public const CHARS_DIGITS = '0123456789';
 
+    /**
+     * Memory format constants.
+     */
     public const MEMORY_FORMAT_BYTES = 0;
     public const MEMORY_FORMAT_KB = 1;
     public const MEMORY_FORMAT_MB = 2;
     public const MEMORY_FORMAT_GB = 3;
 
     /**
+     * Timer data storage.
+     *
      * @var array
      */
     private static array $timer = [];
+
     /**
+     * Memory usage data storage.
+     *
      * @var array
      */
     private static array $memory = [];
 
     /**
-     * DocBlock for method.
+     * Generates a random key of the specified length.
      *
-     * @param int $length
+     * @param int $length Length of the key to generate. Default is 32.
      *
-     * @return string
+     * @return string The generated key.
      */
     public static function generateKey(int $length = 32): string
     {
@@ -59,11 +76,11 @@ class Profiler
     }
 
     /**
-     * DocBlock for method.
+     * Starts profiling for a given name or generates a new key if none is provided.
      *
-     * @param string|null $name
+     * @param string|null $name Optional name for the profiling session.
      *
-     * @return string
+     * @return string The name of the profiling session.
      */
     public static function start(string $name = null): string
     {
@@ -77,9 +94,9 @@ class Profiler
     }
 
     /**
-     * DocBlock for method.
+     * Stops profiling for a given name and calculates duration and memory usage.
      *
-     * @param string $name
+     * @param string $name The name of the profiling session.
      *
      * @return void
      */
@@ -97,9 +114,9 @@ class Profiler
     }
 
     /**
-     * DocBlock for method.
+     * Resets profiling data for a given name or all sessions if no name is provided.
      *
-     * @param string|null $name
+     * @param string|null $name Optional name of the profiling session to reset.
      *
      * @return void
      */
@@ -115,11 +132,11 @@ class Profiler
     }
 
     /**
-     * DocBlock for method.
+     * Retrieves the duration of a profiling session.
      *
-     * @param string $name
+     * @param string $name The name of the profiling session.
      *
-     * @return float
+     * @return float The duration in seconds.
      */
     public static function getDuration(string $name): float
     {
@@ -130,12 +147,12 @@ class Profiler
     }
 
     /**
-     * DocBlock for method.
+     * Retrieves the memory usage of a profiling session in the specified format.
      *
-     * @param string $name
-     * @param int $format
+     * @param string $name The name of the profiling session.
+     * @param int $format The memory format (e.g., bytes, KB, MB, GB). Default is bytes.
      *
-     * @return float
+     * @return float The memory usage in the specified format.
      */
     public static function getMemory(string $name, int $format = self::MEMORY_FORMAT_BYTES): float
     {

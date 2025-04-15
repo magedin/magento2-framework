@@ -43,6 +43,7 @@ abstract class AbstractLocator implements LocatorInterface
      * @var ObjectManagerInterface The object manager instance used to create objects dynamically.
      */
     protected ObjectManagerInterface $objectManager;
+    private \Magento\Framework\Escaper $escaper;
 
     /**
      * Constructor.
@@ -56,11 +57,13 @@ abstract class AbstractLocator implements LocatorInterface
     public function __construct(
         Registry $registry,
         RequestInterface $request,
-        ObjectManagerInterface $objectManager
+        ObjectManagerInterface $objectManager,
+        \Magento\Framework\Escaper $escaper
     ) {
         $this->registry = $registry;
         $this->request = $request;
         $this->objectManager = $objectManager;
+        $this->escaper = $escaper;
     }
 
     /**
@@ -80,7 +83,8 @@ abstract class AbstractLocator implements LocatorInterface
     {
         // Try to get the model from the registry first
         $model = $this->registry->registry($this->getRegistryKey());
-        if (is_subclass_of($model, $this->getModelClassName()) && $model->getId()) {
+        $className = $this->getModelClassName();
+        if ($model && ($model instanceof $className) && $model->getId()) {
             return $model;
         }
 
