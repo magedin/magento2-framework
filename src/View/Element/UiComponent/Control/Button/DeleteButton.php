@@ -39,11 +39,11 @@ class DeleteButton extends AbstractButton
         if ($this->getRequestId()) {
             $defaultConfig = "Are you sure you want to delete this?";
             $data = [
-                'label' => __($this->getLabel() ?? 'Delete this entry'),
+                'label' => __($this->getLabel() ?? 'Delete'),
                 'class' => $this->getClass() ?? 'delete',
                 'on_click' => 'deleteConfirm(\'' . __($this->getConfirmMessage() ?? $defaultConfig) . '\', \'' .
                     $this->getDeleteUrl() . '\')',
-                'sort_order' => $this->getSortOrder(),
+                'sort_order' => $this->getSortOrder() ?? 50,
             ];
         }
         return $data;

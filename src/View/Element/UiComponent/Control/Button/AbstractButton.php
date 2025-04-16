@@ -97,11 +97,11 @@ abstract class AbstractButton implements ButtonProviderInterface
     /**
      * Retrieve the sort order for the button.
      *
-     * @return int The sort order value.
+     * @return ?int The sort order value.
      */
-    protected function getSortOrder(): int
+    protected function getSortOrder(): ?int
     {
-        return 10;
+        return null;
     }
 
     /**

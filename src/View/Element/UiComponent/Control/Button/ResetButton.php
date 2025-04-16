@@ -38,7 +38,7 @@ class ResetButton extends AbstractButton
             'label' => __($this->label ?? 'Reset'),
             'class' => $this->getClass() ?? 'reset',
             'on_click' => 'location.reload();',
-            'sort_order' => $this->getSortOrder() ?? 50,
+            'sort_order' => $this->getSortOrder() ?? 20,
         ];
     }
 }

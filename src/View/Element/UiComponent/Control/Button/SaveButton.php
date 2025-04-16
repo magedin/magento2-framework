@@ -42,7 +42,7 @@ class SaveButton extends AbstractButton
                     ]
                 ]
             ],
-            'sort_order' => $this->getSortOrder() ?? 30,
+            'sort_order' => $this->getSortOrder() ?? 100,
         ];
     }
 
