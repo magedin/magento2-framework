@@ -4,6 +4,7 @@
 /.claude export-ignore
 /docs export-ignore
 /Docs export-ignore
+/RELEASE-NOTES.md export-ignore
 /COMMERCIAL.md export-ignore
 /CLAUDE.md export-ignore
 /LICENSE.txt
