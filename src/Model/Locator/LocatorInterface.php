@@ -13,7 +13,8 @@
 namespace MagedIn\Framework\Magento2\Model\Locator;
 
 /**
- * DocBlock for LocatorInterface interface.
+ * Interface for a locator system that provides methods for retrieving locators,
+ * resolving IDs, and creating new instances.
  */
 interface LocatorInterface
 {

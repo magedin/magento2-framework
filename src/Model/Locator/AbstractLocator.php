@@ -20,12 +20,13 @@ use Magento\Framework\ObjectManagerInterface;
 use Magento\Framework\Registry;
 
 /**
- * Abstract class `AbstractLocator` provides a base implementation for locating models.
+ * Abstract class AbstractLocator implements LocatorInterface.
  *
- * This class defines common functionality for retrieving models from the registry,
- * resolving IDs, and interacting with repositories. It requires concrete implementations
- * to define specific details such as the registry key, request field name, repository class,
- * and model class.
+ * The AbstractLocator class provides a mechanism to locate and manage models
+ * within an application. It utilizes a registry, request parameters, and an
+ * object manager to retrieve, create, or resolve models and their associated
+ * repositories. This class also defines a set of abstract methods that must
+ * be implemented by concrete subclasses to handle specific model classes.
  */
 abstract class AbstractLocator implements LocatorInterface
 {
@@ -43,7 +44,6 @@ abstract class AbstractLocator implements LocatorInterface
      * @var ObjectManagerInterface The object manager instance used to create objects dynamically.
      */
     protected ObjectManagerInterface $objectManager;
-    private \Magento\Framework\Escaper $escaper;
 
     /**
      * Constructor.
@@ -57,13 +57,11 @@ abstract class AbstractLocator implements LocatorInterface
     public function __construct(
         Registry $registry,
         RequestInterface $request,
-        ObjectManagerInterface $objectManager,
-        \Magento\Framework\Escaper $escaper
+        ObjectManagerInterface $objectManager
     ) {
         $this->registry = $registry;
         $this->request = $request;
         $this->objectManager = $objectManager;
-        $this->escaper = $escaper;
     }
 
     /**
