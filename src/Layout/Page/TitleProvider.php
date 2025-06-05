@@ -52,6 +52,6 @@ class TitleProvider
      */
     public function getPageTitleBlockInstance(): ?BlockInterface
     {
-        return $this->layout->getBlock(self::TITLE_BLOCK_NAME) ?? null;
+        return $this->layout->getBlock(self::TITLE_BLOCK_NAME) ?: null;
     }
 }
