@@ -82,7 +82,7 @@ class Profiler
      *
      * @return string The name of the profiling session.
      */
-    public static function start(string $name = null): string
+    public static function start(?string $name = null): string
     {
         if (empty($name)) {
             $name = self::generateKey();
@@ -120,7 +120,7 @@ class Profiler
      *
      * @return void
      */
-    public static function reset(string $name = null): void
+    public static function reset(?string $name = null): void
     {
         if ($name === null) {
             self::$timer = [];

@@ -116,7 +116,7 @@ abstract class AbstractLocator implements LocatorInterface
      *
      * @return int|null The resolved ID, or null if no valid ID is found.
      */
-    public function resolveId(int $id = null): ?int
+    public function resolveId(?int $id = null): ?int
     {
         // If not in registry, try to load by ID from request
         if (empty($id)) {

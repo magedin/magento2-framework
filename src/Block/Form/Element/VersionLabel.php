@@ -49,7 +49,7 @@ class VersionLabel extends Label
         Factory $factoryElement,
         CollectionFactory $factoryCollection,
         Escaper $escaper,
-        string $packageName = null,
+        ?string $packageName = null,
         $data = []
     ) {
         $this->moduleMetadata = $moduleMetadata;

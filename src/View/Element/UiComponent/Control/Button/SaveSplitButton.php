@@ -81,13 +81,13 @@ class SaveSplitButton extends SaveButton
     protected function buildOption(
         string $label,
         string $id,
-        string $back = null,
+        ?string $back = null,
         int $sortOrder = 10,
-        string $class = null,
-        string $className = null,
-        string $buttonClass = null,
+        ?string $class = null,
+        ?string $className = null,
+        ?string $buttonClass = null,
         array $options = [],
-        string $dropdownButtonAriaLabel = null,
+        ?string $dropdownButtonAriaLabel = null,
         bool $disabled = false
     ): array {
         return [

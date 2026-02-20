@@ -34,7 +34,7 @@ interface LocatorInterface
      *
      * @return int|null
      */
-    public function resolveId(int $id = null): ?int;
+    public function resolveId(?int $id = null): ?int;
 
     /**
      * Create new instance.
