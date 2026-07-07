@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.1] - 2026-07-07
+
+### Fixed
+- **PHP 8.4 Compatibility**: Added explicit nullable type hints (`?type`) to parameters that relied on implicit nullability, which is deprecated as of PHP 8.4:
+  - `Block\Form\Element\VersionLabel::__construct()` - `$packageName` parameter
+  - `Model\Locator\AbstractLocator::resolveId()` and `Model\Locator\LocatorInterface::resolveId()` - `$id` parameter
+  - `Profiler::start()` and `Profiler::reset()` - `$name` parameter
+  - `View\Element\UiComponent\Control\Button\SaveSplitButton::buildOption()` - `$back`, `$class`, `$className`, `$buttonClass`, and `$dropdownButtonAriaLabel` parameters
+
 ## [1.4.0] - 2025-08-13
 
 ### Added
